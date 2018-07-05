@@ -86,16 +86,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
-                    /*
-                    mProgress.dismiss();
-
-                    Intent main_Intent = new Intent(RegisterActivity.this,
-                            MainActivity.class);
-                    main_Intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(main_Intent);
-                    finish();
-                    */
                     FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
                     String uid = current_user.getUid();
 

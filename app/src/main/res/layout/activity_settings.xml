@@ -7,7 +7,14 @@
     android:background="@color/colorPrimary"
     tools:context=".SettingsActivity">
 
+    <include
+        android:id="@+id/setting_toolbar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_setting_displayImage"
         android:layout_width="170dp"
         android:layout_height="170dp"
         android:layout_alignParentTop="true"

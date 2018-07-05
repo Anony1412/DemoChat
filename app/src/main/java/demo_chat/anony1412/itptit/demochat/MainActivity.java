@@ -77,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.btn_main_settting: {
-
+                Intent setting_Intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(setting_Intent);
                 break;
             }
             case R.id.btn_main_log_out: {
