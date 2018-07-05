@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +52,9 @@ public class StatusActivity extends AppCompatActivity implements View.OnClickLis
     private void Maps() {
         // Android Layout
         txt_mStatus = findViewById(R.id.txt_status_ChangeStatus);
+        String status_value = getIntent().getStringExtra("status_value");
+        txt_mStatus.getEditText().setText(status_value);
+
         btn_mSaveChange = findViewById(R.id.btn_status_saveChange);
 
         // Toolbar
@@ -81,9 +85,13 @@ public class StatusActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
+                        
                         mProgress.dismiss();
-                        Intent settingIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        startActivity(settingIntent);
+                    
+                    } else {
+
+                        Toast.makeText(StatusActivity.this, "Cập nhật trạng thái mới thất bại!", Toast.LENGTH_SHORT).show();
+                        
                     }
                 }
             });
