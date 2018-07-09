@@ -81,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(setting_Intent);
                 break;
             }
+            case R.id.btn_main_all_users : {
+                Intent user_Intent = new Intent(MainActivity.this, UsersActivity.class);
+                startActivity(user_Intent);
+                break;
+            }
             case R.id.btn_main_log_out: {
                 FirebaseAuth.getInstance().signOut();
                 sendToStart();

@@ -5,7 +5,8 @@
     <item
         android:id="@+id/btn_main_settting"
         android:title="Account Setting" />
-    <item android:title="NULL" />
+    <item android:id="@+id/btn_main_all_users"
+        android:title="All Users" />
     <item
         android:id="@+id/btn_main_log_out"
         android:title="Log out" />
