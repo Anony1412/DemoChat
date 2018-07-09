@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -39,6 +40,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     // Storage FireBase
     private StorageReference mImageStore;
+
+    // Upload Task
+    UploadTask uploadTask;
 
     // Android layout
     private TextView txt_settingDisplayName;
@@ -160,47 +164,48 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             if (resultCode == RESULT_OK) {
 
                 mProgress = new ProgressDialog(this);
-                mProgress.setTitle("Updating Image");
+                mProgress.setTitle("Update Image");
                 mProgress.setMessage("Please wait while updating image!");
                 mProgress.setCanceledOnTouchOutside(false);
                 mProgress.show();
 
                 String current_uid = mCurrentUser.getUid();
 
-                Uri resultUri = result.getUri();
-                StorageReference filePath = mImageStore.child("profile_images").child(current_uid + ".jpg");
+                final Uri resultUri = result.getUri();
+                final StorageReference filePath = mImageStore.child("profile_images").child(current_uid + ".jpg");
 
-                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                // đã getDownloadUrl() được bằng phương thức này ^^
+                uploadTask = filePath.putFile(resultUri);
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
 
-                            // why can't call method getDownloadUrl() inside StorageFireBase???
-                            String download_url = task.getResult().getMetadata().getReference().getDownloadUrl().toString();
-                            mUserDatabase.child("image").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        // Continue with the task to get the download URL
+                        return filePath.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+
+//                            Toast.makeText(SettingsActivity.this, String.valueOf(downloadUri), Toast.LENGTH_SHORT).show();
+                            mUserDatabase.child("image").setValue(String.valueOf(downloadUri)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     mProgress.dismiss();
-                                    Toast.makeText(SettingsActivity.this, "Success Updating", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Updating successfuly!", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                         } else {
-                            Toast.makeText(SettingsActivity.this, "Upload image error!", Toast.LENGTH_SHORT).show();
-                            mProgress.dismiss();
+                            // Handle failures
+                            // ...
                         }
                     }
                 });
-
-                /*
-                filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    }
-                });
-                */
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
