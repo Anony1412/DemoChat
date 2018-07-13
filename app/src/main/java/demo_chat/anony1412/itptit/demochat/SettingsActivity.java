@@ -2,6 +2,7 @@ package demo_chat.anony1412.itptit.demochat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,9 +29,15 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -106,7 +113,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 txt_settingDisplayName.setText(name);
                 txt_settingStatus.setText(status);
 
-                Picasso.get().load(image).into(img_settingDisplayImage);
+                if (!image.equals("default")) {
+                    Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(img_settingDisplayImage);
+                }
+
             }
 
             @Override
@@ -167,13 +177,33 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 mProgress.setCanceledOnTouchOutside(false);
                 mProgress.show();
 
-                String current_uid = mCurrentUser.getUid();
+                Uri resultUri = result.getUri();
 
-                final Uri resultUri = result.getUri();
+                final File thumb_filePath = new File(resultUri.getPath());
+
+                final String current_uid = mCurrentUser.getUid();
+
+                Bitmap thumb_bitmap = null;
+                try {
+                    thumb_bitmap = new Compressor(this)
+                            .setMaxWidth(200)
+                            .setMaxHeight(200)
+                            .setQuality(75)
+                            .compressToBitmap(thumb_filePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                thumb_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                final byte[] thumb_byte = baos.toByteArray();
+
                 final StorageReference filePath = mImageStore.child("profile_images").child(current_uid + ".jpg");
+                final StorageReference thumb_filepath = mImageStore.child("profile_images").child("thumbs").child(current_uid + ".jpg");
 
                 // đã getDownloadUrl() được bằng phương thức này ^^
                 uploadTask = filePath.putFile(resultUri);
+                uploadTask = thumb_filepath.putBytes(thumb_byte);
                 Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -190,13 +220,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         if (task.isSuccessful()) {
                             Uri downloadUri = task.getResult();
 
-                            mUserDatabase.child("image").setValue(String.valueOf(downloadUri)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            String thumb_downloadUrl = String.valueOf(downloadUri);
+
+                            Map update_hashMap = new HashMap();
+                            update_hashMap.put("image", thumb_downloadUrl);
+                            update_hashMap.put("thumb_image", thumb_downloadUrl);
+                            mUserDatabase.updateChildren(update_hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     mProgress.dismiss();
-                                    Toast.makeText(getApplicationContext(), "Updating successfuly!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Updating successfully!", Toast.LENGTH_SHORT).show();
                                 }
                             });
+
                         } else {
                             // Handle failures
                             // ...

@@ -9,6 +9,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,6 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+ext {
+    supportLibraryVersion = '27.0.2'
+
 }
 
 dependencies {
@@ -43,10 +48,11 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
-    implementation 'com.android.support:multidex:1.0.0'
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
-
+    implementation 'com.iceteck.silicompressorr:silicompressor:2.1'
+    implementation 'id.zelory:compressor:2.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

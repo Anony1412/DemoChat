@@ -2,9 +2,10 @@ package demo_chat.anony1412.itptit.demochat;
 
 public class Users {
 
-    public String name;
-    public String status;
-    public String image;
+    private String name;
+    private String status;
+    private String image;
+    private String thumb_image;
 
     public Users() {
     }
@@ -37,5 +38,13 @@ public class Users {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getThumb_image() {
+        return thumb_image;
+    }
+
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
     }
 }
