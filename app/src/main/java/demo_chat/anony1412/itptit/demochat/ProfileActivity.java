@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private DatabaseReference mFriendReqDatabase;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mFriendDatabase;
+    private DatabaseReference mNotificationDatabase;
 
     // ProgressDialog
     private ProgressDialog mProgress;
@@ -59,6 +61,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mFriendReqDatabase = FirebaseDatabase.getInstance().getReference().child("Friend_req");
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         mFriendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
+        mNotificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
 
         // Android
         Setup();
@@ -138,6 +141,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                 mCurrent_state = "req_sent";
                                 mProfileSendFriendsReqBtn.setText("Cancel Friend Request");
 
+
+                                mProfileDeclineFriendBtn.setVisibility(View.INVISIBLE);
+                                mProfileDeclineFriendBtn.setEnabled(false);
                             }
 
                             // ProgressDialog
@@ -153,6 +159,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                         mCurrent_state = "friends";
 //                                        mProfileSendFriendsReqBtn.setText("Unfriend this person");
                                         mProfileSendFriendsReqBtn.setText("Unfriend " + mProfileDisplayName.getText());
+
+                                        mProfileDeclineFriendBtn.setVisibility(View.INVISIBLE);
+                                        mProfileDeclineFriendBtn.setEnabled(false);
 
                                     }
 
@@ -207,13 +216,29 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             if (task.isSuccessful()) {
 
                                 mFriendReqDatabase.child(userID).child(mCurrentUser.getUid()).child("request_type")
-                                        .setValue("received").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .setValue("received")
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @SuppressLint("ResourceAsColor")
                                     @Override
                                     public void onSuccess(Void aVoid) {
 
-                                        mCurrent_state = "req_sent";
-                                        mProfileSendFriendsReqBtn.setText("Cancel Friend Request");
+                                        HashMap<String, String> notificationData = new HashMap<>();
+                                        notificationData.put("from", mCurrentUser.getUid());
+                                        notificationData.put("type", "request");
+
+                                        mNotificationDatabase.child(userID).push().setValue(notificationData)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                                mCurrent_state = "req_sent";
+                                                mProfileSendFriendsReqBtn.setText("Cancel Friend Request");
+
+                                                mProfileDeclineFriendBtn.setVisibility(View.INVISIBLE);
+                                                mProfileDeclineFriendBtn.setEnabled(false);
+
+                                            }
+                                        });
 
                                     }
                                 });
@@ -246,6 +271,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                     mProfileSendFriendsReqBtn.setEnabled(true);
                                     mCurrent_state = "not_friend";
                                     mProfileSendFriendsReqBtn.setText("Send Friend Request");
+
+                                    mProfileDeclineFriendBtn.setVisibility(View.INVISIBLE);
+                                    mProfileDeclineFriendBtn.setEnabled(false);
 
                                 }
                             });
@@ -282,8 +310,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                                                                             mProfileSendFriendsReqBtn.setEnabled(true);
                                                                             mCurrent_state = "friends";
-                                                                            mProfileSendFriendsReqBtn.setText("Unfriend" + mProfileDisplayName.getText());
+                                                                            mProfileSendFriendsReqBtn.setText("Unfriend " + mProfileDisplayName.getText());
 
+                                                                            mProfileDeclineFriendBtn.setVisibility(View.INVISIBLE);
+                                                                            mProfileDeclineFriendBtn.setEnabled(false);
                                                                         }
                                                                     });
                                                         }
