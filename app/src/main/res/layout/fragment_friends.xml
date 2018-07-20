@@ -5,9 +5,10 @@
     tools:context="demo_chat.anony1412.itptit.demochat.FriendsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Friends Fragment" />
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friend_lists"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

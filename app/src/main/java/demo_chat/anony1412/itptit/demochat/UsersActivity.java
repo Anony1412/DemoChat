@@ -65,7 +65,9 @@ public class UsersActivity extends AppCompatActivity {
                         .setQuery(mUsersDataBase, Users.class)
                         .build();
 
-        FirebaseRecyclerAdapter<Users, UsersViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
+        FirebaseRecyclerAdapter<Users, UsersViewHolder> firebaseRecyclerAdapter
+                = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
+
             @NonNull
             @Override
             public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

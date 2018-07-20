@@ -203,6 +203,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
+
+            // mProfileSendFriendReqBtn
             case R.id.profile_sendFriendReqBtn: {
 
                 mProfileSendFriendsReqBtn.setEnabled(false);
@@ -289,12 +291,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 if (mCurrent_state.equals("req_received")) {
 
                     final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
-                    mFriendDatabase.child(mCurrentUser.getUid()).child(userID).setValue(currentDate)
+                    mFriendDatabase.child(mCurrentUser.getUid()).child(userID).child("date").setValue(currentDate)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
 
-                                    mFriendDatabase.child(userID).child(mCurrentUser.getUid()).setValue(currentDate)
+                                    mFriendDatabase.child(userID).child(mCurrentUser.getUid()).child("date").setValue(currentDate)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -355,6 +357,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                 break;
             }
+
+            // mProfileDeclineFriendReqBtn
             case R.id.profile_declineFriendReqBtn: {
 
                 mProfileDeclineFriendBtn.setEnabled(false);
