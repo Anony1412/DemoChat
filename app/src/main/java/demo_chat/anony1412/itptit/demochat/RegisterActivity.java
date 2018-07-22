@@ -114,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 } else {
                     mProgress.hide();
-                    Toast.makeText(RegisterActivity.this, "Dang ky tai khoan that bai!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Đăng ký tài khoản thất bại!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

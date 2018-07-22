@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,28 +33,32 @@ public class DemoChat extends MultiDexApplication {
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
-        /*------------------------------*/
 
         mAuth = FirebaseAuth.getInstance();
-        mDataBase = FirebaseDatabase.getInstance().getReference().child("Users")
-                .child(mAuth.getCurrentUser().getUid());
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+        if (mCurrentUser != null) {
+            mDataBase = FirebaseDatabase.getInstance().getReference().child("Users")
+                    .child(mAuth.getCurrentUser().getUid());
 
-        mDataBase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            mDataBase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot != null) {
+                    if (dataSnapshot != null) {
 
-                    mDataBase.child("online").onDisconnect().setValue(ServerValue.TIMESTAMP);
+                        mDataBase.child("online").onDisconnect().setValue(ServerValue.TIMESTAMP);
+
+                    }
 
                 }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        } else {
 
-            }
-        });
+        }
     }
 }
