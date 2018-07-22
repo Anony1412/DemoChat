@@ -2,10 +2,12 @@ package demo_chat.anony1412.itptit.demochat;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -81,17 +83,19 @@ public class FriendsFragment extends Fragment {
         FirebaseRecyclerAdapter<Friends, FriendsViewHolder> adapter
                 = new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>(options) {
 
+            String userName;
+
             @Override
             protected void onBindViewHolder(@NonNull final FriendsViewHolder holder, int position, @NonNull final Friends model) {
 
                 holder.setDate(model.getDate());
-                String list_user_id = getRef(position).getKey();
+                final String list_user_id = getRef(position).getKey();
                 mUserDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        String userName = dataSnapshot.child("name").getValue().toString();
+                        userName = dataSnapshot.child("name").getValue().toString();
                         String userThumb = dataSnapshot.child("thumb_image").getValue().toString();
                         String userOnline = dataSnapshot.child("online").getValue().toString();
 
@@ -106,13 +110,35 @@ public class FriendsFragment extends Fragment {
                     }
                 });
 
-                final String userID = getRef(position).getKey();
                 holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent profileIntent = new Intent(getActivity(), ProfileActivity.class);
-                        profileIntent.putExtra("userID", userID);
-                        startActivity(profileIntent);
+                        CharSequence options[] = new CharSequence[]{"Open Profile", "Send Message"};
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                        builder.setTitle("Select Options");
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int position) {
+
+                                // Click event for each item
+                                if (position == 0) {
+                                    Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+                                    profileIntent.putExtra("userID", list_user_id);
+                                    startActivity(profileIntent);
+                                }
+
+                                if (position == 1) {
+                                    Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                    chatIntent.putExtra("userID", list_user_id);
+                                    chatIntent.putExtra("userName", userName);
+                                    startActivity(chatIntent);
+                                }
+
+                            }
+                        });
+                        builder.show();
                     }
                 });
 
@@ -160,7 +186,7 @@ public class FriendsFragment extends Fragment {
 
         public void setOnline(String userOnlineState) {
             ImageView mOnlineImg = mView.findViewById(R.id.user_single_online_icon);
-            if (userOnlineState.equals(true)) {
+            if (userOnlineState.equals("true")) {
                 mOnlineImg.setVisibility(View.VISIBLE);
             } else {
                 mOnlineImg.setVisibility(View.INVISIBLE);

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.client.ServerValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
-            mUserRef.child("online").setValue(true);
+            mUserRef.child("online").setValue("true");
 
         }
     }
@@ -71,7 +72,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        mUserRef.child("online").setValue(false);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
+        }
+
     }
 
     private void sendToStart() {

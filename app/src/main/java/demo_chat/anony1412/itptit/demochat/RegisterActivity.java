@@ -31,7 +31,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private TextInputEditText tedt_mDisplayName;
     private TextInputEditText tedt_mEmail;
     private TextInputEditText tedt_mPassWord;
+
     private Toolbar mToolbar;
+
     private ProgressDialog mProgress;
 
     @Override

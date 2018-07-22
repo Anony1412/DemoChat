@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,6 +49,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     // ProgressDialog
     private ProgressDialog mProgress;
 
+    // Toolbar
+    private Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         // Android
         userID = getIntent().getStringExtra("userID");
+
+        // Toolbar
+        mToolbar = findViewById(R.id.profile_appBar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Home");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // FireBase
         mUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
