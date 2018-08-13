@@ -236,6 +236,9 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("seen" , false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("from", mCurrentUserId);
+
+            mChatMessageTxt.setText("");
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);

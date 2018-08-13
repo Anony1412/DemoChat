@@ -2,7 +2,7 @@ package demo_chat.anony1412.itptit.demochat;
 
 public class Messages {
 
-    private String message, type;
+    private String message, type, from;
     private long time;
     private boolean seen;
 
@@ -11,6 +11,10 @@ public class Messages {
         this.seen = seen;
         this.time = time;
         this.type = type;
+    }
+
+    public Messages(String from) {
+        this.from = from;
     }
 
     public Messages() {
@@ -46,5 +50,13 @@ public class Messages {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }
