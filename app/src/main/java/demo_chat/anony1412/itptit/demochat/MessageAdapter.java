@@ -9,6 +9,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -18,6 +24,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private List<Messages> mMessagesList;
     private FirebaseAuth mAuth;
+    private DatabaseReference mRootRef;
 
     public MessageAdapter(List<Messages> mMessagesList) {
         this.mMessagesList = mMessagesList;
@@ -34,8 +41,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
 
+        mRootRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         String current_user_id = null;
         try {
@@ -50,6 +58,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         String from_user = c.getFrom();
 
+        // Set avatar for user
+        mRootRef.child("Users").child(from_user).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String thumb_image = dataSnapshot.child("thumb_image").getValue().toString();
+                holder.setImage(thumb_image);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Set background for message frame
         if (from_user.equals(current_user_id)) {
 
             holder.messageText.setBackgroundResource(R.drawable.message_text_background);
@@ -57,7 +82,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         } else {
 
-            holder.messageText.setBackgroundColor(Color.WHITE);
+            holder.messageText.setBackgroundResource(R.drawable.user_chat_message_text_background);
             holder.messageText.setTextColor(Color.BLACK);
 
         }
@@ -81,6 +106,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             messageText = view.findViewById(R.id.message_text_layout);
             profileImage = view.findViewById(R.id.message_profile_layout);
+        }
+
+        public void setImage(String thumb_image) {
+            Picasso.get().load(thumb_image).placeholder(R.drawable.avatar_56px).resize(56, 56).into(profileImage);
         }
     }
 }
