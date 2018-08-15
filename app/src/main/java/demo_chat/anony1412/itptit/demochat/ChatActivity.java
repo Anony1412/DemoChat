@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     // FireBase
     private DatabaseReference mRootRef;
     private FirebaseAuth mAuth;
+    private SwipeRefreshLayout mRefreshLayout;
 
     // Android Layout
     private TextView mTittleView;
@@ -58,6 +60,10 @@ public class ChatActivity extends AppCompatActivity {
     private final List<Messages> messageList = new ArrayList<>();
     private LinearLayoutManager mLinearLayout;
     private MessageAdapter messageAdapter;
+
+    // Const variable
+    private static final int TOTAL_TO_LOAD = 10;
+    private int mCurrentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +98,7 @@ public class ChatActivity extends AppCompatActivity {
         mTittleView = findViewById(R.id.custom_bar_tittle);
         mLastView = findViewById(R.id.custom_bar_seen);
         mProfileImage = findViewById(R.id.custom_bar_image);
+        mRefreshLayout = findViewById(R.id.message_swipe_layout);
 
         mChatAddBtn = findViewById(R.id.chat_add_btn);
         mChatSendBtn = findViewById(R.id.chat_send_btn);
@@ -180,13 +187,26 @@ public class ChatActivity extends AppCompatActivity {
         rv_mMessageList.setHasFixedSize(true);
         rv_mMessageList.setLayoutManager(mLinearLayout);
         rv_mMessageList.setAdapter(messageAdapter);
-        loadMessage();
+
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+//                mCurrentPage++;
+                loadMessage();
+
+            }
+        });
 
     }
 
     private void loadMessage() {
 
-        mRootRef.child("message").child(mCurrentUserId).child(mChatUser).addChildEventListener(new ChildEventListener() {
+//        DatabaseReference messageRef = mRootRef.child("message").child(mCurrentUserId).child(mChatUser);
+//        Query messageQuery = messageRef.limitToLast(mCurrentPage * TOTAL_TO_LOAD);
+
+        mRootRef.child("message").child(mCurrentUserId).child(mChatUser)
+                .addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
@@ -195,6 +215,8 @@ public class ChatActivity extends AppCompatActivity {
                 messageAdapter.notifyDataSetChanged();
 
                 rv_mMessageList.scrollToPosition(messageList.size() - 1);
+                mRefreshLayout.setRefreshing(false);
+
             }
 
             @Override

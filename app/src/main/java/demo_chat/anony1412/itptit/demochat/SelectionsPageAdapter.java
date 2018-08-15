@@ -14,13 +14,13 @@ class SelectionsPageAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position) {
             case 0: {
-                return new RequestsFragment();
-            }
-            case 1: {
                 return new ChatsFragment();
             }
-            case 2: {
+            case 1: {
                 return new FriendsFragment();
+            }
+            case 2: {
+                return new RequestsFragment();
             }
             default:
                 return null;
@@ -35,13 +35,13 @@ class SelectionsPageAdapter extends FragmentPagerAdapter{
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0: {
-                return "REQUESTS";
-            }
-            case 1: {
                 return "CHAT";
             }
-            case 2: {
+            case 1: {
                 return "FRIENDS";
+            }
+            case 2: {
+                return "REQUESTS";
             }
             default: {
                 return null;
