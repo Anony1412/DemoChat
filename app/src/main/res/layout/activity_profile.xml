@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray"
+    android:background="@color/colorWhite"
     tools:context=".ProfileActivity">
 
     <include
@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/profile_appBar">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_Image"
             android:layout_width="match_parent"
             android:layout_height="232dp"
@@ -30,7 +30,7 @@
             android:layout_below="@+id/profile_Image"
             android:layout_marginTop="8dp"
             android:text="DisplayName"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textSize="24sp" />
 
         <TextView
@@ -41,8 +41,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
             android:text="Default Status"
-            android:textColor="@color/colorWhiteDark"
-            android:textSize="22sp" />
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/profile_totalFriends"
@@ -51,7 +51,7 @@
             android:layout_below="@+id/profile_Status"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
-            android:text="Total Friends"
+            android:text=""
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
 
@@ -62,7 +62,7 @@
             android:layout_below="@+id/profile_totalFriends"
             android:layout_marginTop="12dp"
             android:layout_centerHorizontal="true"
-            android:background="@color/colorRed"
+            android:background="@color/colorBlue"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:text="Send Friend Request"

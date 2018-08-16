@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +27,12 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Android Layout
-    private ImageView mProfileImage;
+    private CircleImageView mProfileImage;
     private TextView mProfileDisplayName, mProfileStatus, mProfileTotalFriends;
     private Button mProfileSendFriendsReqBtn;
     private Button mProfileDeclineFriendBtn;
@@ -97,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         mProfileStatus = findViewById(R.id.profile_Status);
 
-        mProfileTotalFriends = findViewById(R.id.profile_totalFriends);
+//        mProfileTotalFriends = findViewById(R.id.profile_totalFriends);
 
         mProfileSendFriendsReqBtn = findViewById(R.id.profile_sendFriendReqBtn);
 

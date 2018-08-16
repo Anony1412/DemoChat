@@ -27,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,15 +190,15 @@ public class ChatActivity extends AppCompatActivity {
         rv_mMessageList.setLayoutManager(mLinearLayout);
         rv_mMessageList.setAdapter(messageAdapter);
 
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+//        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
 
 //                mCurrentPage++;
                 loadMessage();
 
-            }
-        });
+//            }
+//        });
 
     }
 
@@ -215,7 +217,7 @@ public class ChatActivity extends AppCompatActivity {
                 messageAdapter.notifyDataSetChanged();
 
                 rv_mMessageList.scrollToPosition(messageList.size() - 1);
-                mRefreshLayout.setRefreshing(false);
+//                mRefreshLayout.setRefreshing(true);
 
             }
 
@@ -255,11 +257,13 @@ public class ChatActivity extends AppCompatActivity {
                     .child(mCurrentUserId).child(mChatUser).push();
             String push_id = user_message_push.getKey();
 
+            String time_send_of_message = DateFormat.getTimeInstance().format(new Date());
+
             Map messageMap = new HashMap();
             messageMap.put("message", message);
             messageMap.put("seen" , false);
             messageMap.put("type", "text");
-            messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("time", time_send_of_message);
             messageMap.put("from", mCurrentUserId);
 
             mChatMessageTxt.setText("");

@@ -88,7 +88,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
 
         holder.messageText.setText(c.getMessage());
-
+        holder.messageTimeSend.setText(c.getTime());
     }
 
     @Override
@@ -100,11 +100,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
         public TextView messageText;
+        public TextView messageTimeSend;
         public CircleImageView profileImage;
         public MessageViewHolder(View view) {
             super(view);
 
             messageText = view.findViewById(R.id.message_text_layout);
+            messageTimeSend = view.findViewById(R.id.time_text_layout);
             profileImage = view.findViewById(R.id.message_profile_layout);
         }
 

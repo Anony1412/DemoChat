@@ -3,10 +3,10 @@ package demo_chat.anony1412.itptit.demochat;
 public class Messages {
 
     private String message, type, from;
-    private long time;
+    private String time;
     private boolean seen;
 
-    public Messages(String message, boolean seen, long time, String type) {
+    public Messages(String message, boolean seen, String time, String type) {
         this.message = message;
         this.seen = seen;
         this.time = time;
@@ -32,11 +32,11 @@ public class Messages {
         return type;
     }
 
-    public long getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
